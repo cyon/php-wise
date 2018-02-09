@@ -1,7 +1,10 @@
 {
     "name": "herrera-io/wise",
+    "type": "library",
     "description": "Symfony Config for everyone else.",
-    "keywords": ["config"],
+    "keywords": [
+        "config"
+    ],
     "homepage": "http://github.com/herrera-io/php-wise",
     "license": "MIT",
     "authors": [
@@ -21,7 +24,9 @@
     "require-dev": {
         "herrera-io/json": "~1.0",
         "herrera-io/phpunit-test-case": "1.*",
-        "phpunit/phpunit": "3.7.*",
+        "mikey179/vfsStream": "~1.6",
+        "phpunit/phpunit": ">=5.4.3",
+        "squizlabs/php_codesniffer": "^2.3",
         "symfony/yaml": "~2.2"
     },
     "suggest": {
@@ -34,9 +39,18 @@
             "Herrera\\Wise": "src/lib"
         }
     },
+    "autoload-dev": {
+        "psr-0": {
+            "Herrera\\Wise\\Tests": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "check-style": "phpcs -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests",
+        "fix-style": "phpcbf -p --standard=PSR2 --runtime-set ignore_errors_on_exit 1 --runtime-set ignore_warnings_on_exit 1 src tests"
+    },
     "config": {
-        "bin-dir": "bin",
-        "vendor-dir": "src/vendors"
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {

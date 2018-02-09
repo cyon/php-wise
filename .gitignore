@@ -1,6 +1,6 @@
-/.idea/
-/bin/
-/coverage/
-/src/vendors/
+.idea/
+bin/
+coverage/
+vendor/
 
-/composer.lock
+composer.lock
