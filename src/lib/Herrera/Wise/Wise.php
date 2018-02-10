@@ -213,7 +213,7 @@ class Wise
 
             if ($cache->isFresh()) {
                 /** @noinspection PhpIncludeInspection */
-                return require $cache;
+                return require method_exists($cache, 'getPath') ? $cache->getPath() : (string) $cache;
             }
         }
 
