@@ -87,5 +87,5 @@ install:
   - composer install $DEFAULT_COMPOSER_FLAGS
 
 script:
-  - vendor/bin/phpcs --standard=psr2 src/
+  # - vendor/bin/phpcs --standard=psr2 src/
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
