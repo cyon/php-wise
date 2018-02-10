@@ -1,12 +1,86 @@
+dist: trusty
 language: php
 
-php:
-    - 5.3
-    - 5.4
-    - 5.5
+# This triggers builds to run on the new TravisCI infrastructure.
+# See: https://docs.travis-ci.com/user/reference/overview/#Virtualisation-Environment-vs-Operating-System
+sudo: false
 
-before_script:
-    - composer self-update
-    - composer install --dev --no-interaction --prefer-source
+env:
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 
-script: bin/phpunit
+matrix:
+  fast_finish: true
+  include:
+      # 2.7.*
+    - php: 5.5
+      env: SYMFONY_CONFIG_VERSION=2.7.*
+    - php: 5.6
+      env: SYMFONY_CONFIG_VERSION=2.7.*
+    - php: 7.0
+      env: SYMFONY_CONFIG_VERSION=2.7.*
+    - php: 7.1
+      env: SYMFONY_CONFIG_VERSION=2.7.*
+    - php: 7.2
+      env: SYMFONY_CONFIG_VERSION=2.7.*
+      # 2.8.*
+    - php: 5.5
+      env: SYMFONY_CONFIG_VERSION=2.8.*
+    - php: 5.6
+      env: SYMFONY_CONFIG_VERSION=2.8.*
+    - php: 7.0
+      env: SYMFONY_CONFIG_VERSION=2.8.*
+    - php: 7.1
+      env: SYMFONY_CONFIG_VERSION=2.8.*
+    - php: 7.2
+      env: SYMFONY_CONFIG_VERSION=2.8.*
+      # 3.3.*
+    - php: 5.5
+      env: SYMFONY_CONFIG_VERSION=3.3.*
+    - php: 5.6
+      env: SYMFONY_CONFIG_VERSION=3.3.*
+    - php: 7.0
+      env: SYMFONY_CONFIG_VERSION=3.3.*
+    - php: 7.1
+      env: SYMFONY_CONFIG_VERSION=3.3.*
+    - php: 7.2
+      env: SYMFONY_CONFIG_VERSION=3.3.*
+      # 3.4.*
+    - php: 5.5
+      env: SYMFONY_CONFIG_VERSION=3.4.*
+    - php: 5.6
+      env: SYMFONY_CONFIG_VERSION=3.4.*
+    - php: 7.0
+      env: SYMFONY_CONFIG_VERSION=3.4.*
+    - php: 7.1
+      env: SYMFONY_CONFIG_VERSION=3.4.*
+    - php: 7.2
+      env: SYMFONY_CONFIG_VERSION=3.4.*
+      # 4.0.*
+    - php: 5.5
+      env: SYMFONY_CONFIG_VERSION=4.0.*
+    - php: 5.6
+      env: SYMFONY_CONFIG_VERSION=4.0.*
+    - php: 7.0
+      env: SYMFONY_CONFIG_VERSION=4.0.*
+    - php: 7.1
+      env: SYMFONY_CONFIG_VERSION=4.0.*
+    - php: 7.2
+      env: SYMFONY_CONFIG_VERSION=4.0.*
+
+## Cache composer
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+before_install:
+  - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - composer selfupdate
+  - if [ "$SYMFONY_CONFIG_VERSION" != "" ]; then composer require "symfony/config:${SYMFONY_VERSION}" --no-update; fi;
+
+install:
+  - composer install $DEFAULT_COMPOSER_FLAGS
+
+script:
+  - vendor/bin/phpcs --standard=psr2 src/
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
