@@ -9,6 +9,11 @@ env:
   global:
     - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
 
+branches:
+  only:
+    - master
+    - refactor
+
 matrix:
   fast_finish: true
   include:
