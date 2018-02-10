@@ -2,8 +2,9 @@
 
 namespace Herrera\Wise\Tests\Loader;
 
-use Herrera\PHPUnit\TestCase;
+use PHPUnit\Framework\TestCase;
 use Herrera\Wise\Loader\PhpFileLoader;
+use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Config\FileLocator;
 
 class PhpFileLoaderTest extends TestCase
@@ -23,9 +24,8 @@ class PhpFileLoaderTest extends TestCase
 
     public function testDoLoad()
     {
-        file_put_contents(
-            "{$this->dir}/test.php",
-            <<<DATA
+        $directory = [
+            'test.php' => <<<'DATA'
 <?php return array(
     'imports' => array(
         array('resource' => 'import.php')
@@ -36,18 +36,17 @@ class PhpFileLoaderTest extends TestCase
     )
 );
 DATA
-        );
-
-        file_put_contents(
-            "{$this->dir}/import.php",
-            <<<DATA
+,
+            'import.php' => <<<'DATA'
 <?php return array(
     'imported' => array(
         'value' => 'imported value'
     )
 );
 DATA
-        );
+        ];
+
+        vfsStream::create($directory, $this->dir);
 
         $this->assertSame(
             array(
@@ -68,7 +67,7 @@ DATA
 
     protected function setUp()
     {
-        $this->dir = $this->createDir();
-        $this->loader = new PhpFileLoader(new FileLocator($this->dir));
+        $this->dir = vfsStream::setup('data');
+        $this->loader = new PhpFileLoader(new FileLocator($this->dir->url()));
     }
 }

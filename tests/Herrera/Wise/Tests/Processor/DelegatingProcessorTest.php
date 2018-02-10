@@ -2,9 +2,9 @@
 
 namespace Herrera\Wise\Tests\Processor;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Processor\DelegatingProcessor;
 use Herrera\Wise\Processor\ProcessorResolver;
+use PHPUnit\Framework\TestCase;
 
 class DelegatingProcessorTest extends TestCase
 {
@@ -13,15 +13,15 @@ class DelegatingProcessorTest extends TestCase
      */
     private $processor;
 
+    private $resolver;
+
     public function testConstruct()
     {
-        $this->assertNotNull(
-            $this->getPropertyValue($this->processor, 'resolver')
-        );
+        $this->assertNotNull($this->processor->getResolver());
 
         $this->assertSame(
             $this->processor->getResolver(),
-            $this->getPropertyValue($this->processor, 'resolver')
+            $this->resolver
         );
     }
 
@@ -36,11 +36,7 @@ class DelegatingProcessorTest extends TestCase
 
     public function testGetConfigTreeBuilder()
     {
-        $this->setPropertyValue(
-            $this->processor,
-            'last',
-            new ExampleProcessor()
-        );
+        $this->processor->supports(array(), 'example');
 
         $this->assertInstanceOf(
             'Symfony\\Component\\Config\\Definition\\Builder\\TreeBuilder',
@@ -56,8 +52,7 @@ class DelegatingProcessorTest extends TestCase
 
     protected function setUp()
     {
-        $this->processor = new DelegatingProcessor(
-            new ProcessorResolver(array(new ExampleProcessor()))
-        );
+        $this->resolver = new ProcessorResolver(array(new ExampleProcessor()));
+        $this->processor = new DelegatingProcessor($this->resolver);
     }
 }

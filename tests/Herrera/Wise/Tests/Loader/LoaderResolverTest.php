@@ -6,7 +6,7 @@ use Herrera\Wise\Loader\LoaderResolver;
 use Herrera\Wise\Resource\ResourceCollector;
 use Herrera\Wise\Tests\Loader\ExampleFileLoader;
 use Herrera\Wise\Wise;
-use Herrera\PHPUnit\TestCase;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 class LoaderResolverTest extends TestCase
@@ -28,8 +28,8 @@ class LoaderResolverTest extends TestCase
 
     public function testAddLoader()
     {
-        $this->setPropertyValue($this->resolver, 'collector', $this->collector);
-        $this->setPropertyValue($this->resolver, 'wise', $this->wise);
+        $this->resolver->setResourceCollector($this->collector);
+        $this->resolver->setWise($this->wise);
 
         $loader = new ExampleFileLoader(new FileLocator());
 
@@ -41,7 +41,7 @@ class LoaderResolverTest extends TestCase
 
     public function testGetResourceCollector()
     {
-        $this->setPropertyValue($this->resolver, 'collector', $this->collector);
+        $this->resolver->setResourceCollector($this->collector);
 
         $this->assertSame(
             $this->collector,
@@ -51,7 +51,7 @@ class LoaderResolverTest extends TestCase
 
     public function testGetWise()
     {
-        $this->setPropertyValue($this->resolver, 'wise', $this->wise);
+        $this->resolver->setWise($this->wise);
 
         $this->assertSame($this->wise, $this->resolver->getWise());
     }

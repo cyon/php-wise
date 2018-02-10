@@ -2,9 +2,9 @@
 
 namespace Herrera\Wise\Tests\Processor;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Processor\AbstractProcessor;
 use Herrera\Wise\Processor\ProcessorResolver;
+use PHPUnit\Framework\TestCase;
 
 class AbstractProcessorTest extends TestCase
 {
@@ -18,13 +18,6 @@ class AbstractProcessorTest extends TestCase
      */
     private $resolver;
 
-    public function testGetResolver()
-    {
-        $this->setPropertyValue($this->processor, 'resolver', $this->resolver);
-
-        $this->assertSame($this->resolver, $this->processor->getResolver());
-    }
-
     public function testProcess()
     {
         $this->assertSame(
@@ -33,9 +26,6 @@ class AbstractProcessorTest extends TestCase
         );
     }
 
-    /**
-     * @depends testGetResolver
-     */
     public function testSetResolver()
     {
         $this->processor->setResolver($this->resolver);

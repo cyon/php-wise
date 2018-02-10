@@ -2,12 +2,13 @@
 
 namespace Herrera\Wise\Tests;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Loader\LoaderResolver;
 use Herrera\Wise\Loader\PhpFileLoader;
 use Herrera\Wise\Resource\ResourceCollector;
 use Herrera\Wise\Tests\Processor\TestProcessor;
 use Herrera\Wise\Wise;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 
@@ -45,27 +46,24 @@ class WiseTest extends TestCase
 
     public function testConstruct()
     {
-        $this->assertTrue($this->getPropertyValue($this->wise, 'debug'));
-
         $wise = new Wise();
-
-        $this->assertFalse($this->getPropertyValue($wise, 'debug'));
+        $this->assertFalse($wise->isDebugEnabled());
     }
 
     public function testCreate()
     {
-        file_put_contents(
-            $this->dir . '/test.php',
-            <<<PHP
+        $directory = [
+            'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(
         'number' => 123
     )
 );
 PHP
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
-        $wise = Wise::create($this->dir, $this->cache, true);
+        $wise = Wise::create($this->dir->url(), $this->cache, true);
         $expected = array(
             'root' => array(
                 'number' => 123
@@ -77,7 +75,7 @@ PHP
         $this->assertFileExists($this->cache . '/test.php.cache.meta');
 
         /** @var $delegator \Symfony\Component\Config\Loader\DelegatingLoader */
-        $delegator = $this->getPropertyValue($wise, 'loader');
+        $delegator = $wise->getLoader();
 
         /** @var $loaders \Herrera\Wise\Loader\LoaderResolver */
         $resolver = $delegator->getResolver();
@@ -92,51 +90,6 @@ PHP
         }
     }
 
-    public function testGetCacheDir()
-    {
-        $this->setPropertyValue($this->wise, 'cacheDir', $this->cache);
-
-        $this->assertEquals($this->cache, $this->wise->getCacheDir());
-    }
-
-    public function testGetCollector()
-    {
-        $this->setPropertyValue($this->wise, 'collector', $this->collector);
-
-        $this->assertSame($this->collector, $this->wise->getCollector());
-    }
-
-    public function testGetGlobalParameters()
-    {
-        $this->setPropertyValue(
-            $this->wise,
-            'parameters',
-            array('value' => 123)
-        );
-
-        $this->assertEquals(
-            array('value' => 123),
-            $this->wise->getGlobalParameters()
-        );
-    }
-
-    public function testGetLoader()
-    {
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
-
-        $this->assertSame($this->loader, $this->wise->getLoader());
-    }
-
-    public function testGetProcessor()
-    {
-        $this->setPropertyValue($this->wise, 'processor', $this->processor);
-
-        $this->assertSame($this->processor, $this->wise->getProcessor());
-    }
-
-    /**
-     * @depends testConstruct
-     */
     public function testIsDebugEnabled()
     {
         $this->assertTrue($this->wise->isDebugEnabled());
@@ -157,30 +110,29 @@ PHP
      */
     public function testLoadLoaderNotSupported()
     {
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
-
+        $this->wise->setLoader($this->loader);
         $this->wise->load(123, 'test');
     }
 
     public function testLoad()
     {
-        file_put_contents(
-            $this->dir . '/test.php',
-            <<<PHP
+        $directory = [
+            'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(
         'number' => 123
     )
 );
 PHP
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
         $expected = array(
             'enabled' => false,
             'number' => '123'
         );
 
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
+        $this->wise->setLoader($this->loader);
 
         $this->assertEquals(
             array(
@@ -191,10 +143,9 @@ PHP
             $this->wise->load('test.php', 'php')
         );
 
-        $this->setPropertyValue($this->wise, 'cacheDir', $this->cache);
-        $this->setPropertyValue($this->wise, 'collector', $this->collector);
-        $this->setPropertyValue($this->wise, 'debug', true);
-        $this->setPropertyValue($this->wise, 'processor', $this->processor);
+        $this->wise->setCacheDir($this->cache);
+        $this->wise->setCollector($this->collector);
+        $this->wise->setProcessor($this->processor);
 
         $this->assertEquals($expected, $this->wise->load('test.php', 'php'));
         $this->assertFileExists($this->cache . '/test.php.cache');
@@ -214,10 +165,9 @@ PHP
             'Symfony\\Component\\Config\\Resource\\FileResource',
             $meta[0]
         );
-
-        file_put_contents($this->dir . '/test.php', '');
+        vfsStream::newFile('test.php')->at($this->dir);
         touch(
-            $this->dir . '/test.php',
+            $this->dir->url() . '/test.php',
             filemtime($this->cache . '/test.php.cache') - 1000
         );
 
@@ -229,18 +179,18 @@ PHP
      */
     public function testLoadFlat()
     {
-        file_put_contents(
-            $this->dir . '/test.php',
-            <<<PHP
+         $directory = [
+            'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(
         'number' => 123
     )
 );
 PHP
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
+        $this->wise->setLoader($this->loader);
 
         $this->assertEquals(
             array(
@@ -252,19 +202,19 @@ PHP
 
     public function testLoadWithBasicProcessor()
     {
-        file_put_contents(
-            $this->dir . '/test.php',
-            <<<PHP
+        $directory = [
+            'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(
         'number' => 123
     )
 );
 PHP
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
-        $this->setPropertyValue($this->wise, 'processor', new BasicProcessor());
+        $this->wise->setLoader($this->loader);
+        $this->wise->setProcessor(new BasicProcessor());
 
         $this->assertEquals(
             array(
@@ -275,60 +225,51 @@ PHP
         );
     }
 
+    /**
+     * @expectedException \Herrera\Wise\Exception\ProcessorException
+     * @expectedExceptionMessage The resource "test.php" (php) is not supported by the processor.
+     */
     public function testLoadNoProcessorSupported()
     {
-        file_put_contents(
-            $this->dir . '/test.php',
-            <<<PHP
+        $directory = [
+            'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(
         'number' => 123
     )
 );
 PHP
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
-        $this->setPropertyValue(
-            $this->wise,
-            'processor',
-            new NeverSupportedProcessor()
-        );
-
-        $this->setExpectedException(
-            'Herrera\\Wise\\Exception\\ProcessorException',
-            'The resource "test.php" (php) is not supported by the processor.'
-        );
-
-        $this->wise->load('test.php', 'php', true);
-    }
-
-    public function testLoadNoProcessorRegistered()
-    {
-        file_put_contents(
-            $this->dir . '/test.php',
-            <<<PHP
-<?php return array(
-    'root' => array(
-        'number' => 123
-    )
-);
-PHP
-        );
-
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
-
-        $this->setExpectedException(
-            'Herrera\\Wise\\Exception\\ProcessorException',
-            'No processor registered to handle any resource.'
-        );
+        $this->wise->setLoader($this->loader);
+        $this->wise->setProcessor(new NeverSupportedProcessor());
 
         $this->wise->load('test.php', 'php', true);
     }
 
     /**
-     * @depends testGetCacheDir
+     * @expectedException \Herrera\Wise\Exception\ProcessorException
+     * @expectedExceptionMessage No processor registered to handle any resource.
      */
+    public function testLoadNoProcessorRegistered()
+    {
+        $directory = [
+            'test.php' => <<<'PHP'
+<?php return array(
+    'root' => array(
+        'number' => 123
+    )
+);
+PHP
+        ];
+        vfsStream::create($directory, $this->dir);
+
+        $this->wise->setLoader($this->loader);
+
+        $this->wise->load('test.php', 'php', true);
+    }
+
     public function testSetCacheDir()
     {
         $this->wise->setCacheDir($this->cache);
@@ -336,12 +277,9 @@ PHP
         $this->assertEquals($this->cache, $this->wise->getCacheDir());
     }
 
-    /**
-     * @depends testGetCollector
-     */
     public function testSetCollector()
     {
-        $this->setPropertyValue($this->wise, 'loader', $this->loader);
+        $this->wise->setLoader($this->loader);
 
         $this->wise->setCollector($this->collector);
 
@@ -357,16 +295,13 @@ PHP
         $resolver = new LoaderResolver();
         $loader = new DelegatingLoader($resolver);
 
-        $this->setPropertyValue($this->wise, 'loader', $loader);
+        $this->wise->setLoader($loader);
 
         $this->wise->setCollector($this->collector);
 
         $this->assertSame($this->collector, $resolver->getResourceCollector());
     }
 
-    /**
-     * @depends testGetGlobalParameters
-     */
     public function testSetGlobalParameters()
     {
         $this->wise->setGlobalParameters(array('value' => 123));
@@ -377,22 +312,18 @@ PHP
         );
     }
 
+    /**
+     * @expectedException \Herrera\Wise\Exception\InvalidArgumentException
+     * @expectedExceptionMessage The $parameters argument must be an array or array accessible object.
+     */
     public function testSetGlobalParametersInvalid()
     {
-        $this->setExpectedException(
-            'Herrera\\Wise\\Exception\\InvalidArgumentException',
-            'The $parameters argument must be an array or array accessible object.'
-        );
-
         $this->wise->setGlobalParameters(true);
     }
 
-    /**
-     * @depends testGetLoader
-     */
     public function testSetLoader()
     {
-        $this->setPropertyValue($this->wise, 'collector', $this->collector);
+        $this->wise->setCollector($this->collector);
 
         $this->wise->setLoader($this->loader);
 
@@ -420,9 +351,6 @@ PHP
         $this->assertSame($this->wise, $resolver->getWise());
     }
 
-    /**
-     * @depends testGetProcessor
-     */
     public function testSetProcessor()
     {
         $this->wise->setProcessor($this->processor);
@@ -438,11 +366,12 @@ PHP
 
     protected function setUp()
     {
-        $this->cache = $this->createDir();
-        $this->dir = $this->createDir();
+        $this->root = vfsStream::setup('root');
+        $this->cache = vfsStream::url('root/cache');
+        $this->dir = vfsStream::newDirectory('data')->at($this->root);
 
         $this->collector = new ResourceCollector();
-        $this->loader = new PhpFileLoader(new FileLocator($this->dir));
+        $this->loader = new PhpFileLoader(new FileLocator($this->dir->url()));
         $this->processor = new TestProcessor();
         $this->wise = new Wise(true);
 

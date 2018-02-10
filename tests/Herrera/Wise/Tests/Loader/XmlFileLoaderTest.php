@@ -2,8 +2,9 @@
 
 namespace Herrera\Wise\Tests\Loader;
 
-use Herrera\PHPUnit\TestCase;
+use PHPUnit\Framework\TestCase;
 use Herrera\Wise\Loader\XmlFileLoader;
+use org\bovigo\vfs\vfsStream;
 use Symfony\Component\Config\FileLocator;
 
 class XmlFileLoaderTest extends TestCase
@@ -23,9 +24,8 @@ class XmlFileLoaderTest extends TestCase
 
     public function testDoLoad()
     {
-        file_put_contents(
-            "{$this->dir}/test.xml",
-            <<<DATA
+        $directory = [
+            'test.xml' => <<<'DATA'
 <array>
   <array key="imports">
     <array>
@@ -40,18 +40,16 @@ class XmlFileLoaderTest extends TestCase
   </array>
 </array>
 DATA
-        );
-
-        file_put_contents(
-            "{$this->dir}/import.xml",
-            <<<DATA
+,
+            'import.xml' => <<<'DATA'
 <array>
   <array key="imported">
     <str key="value">imported value</str>
   </array>
 </array>
 DATA
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
         $this->assertSame(
             array(
@@ -74,7 +72,7 @@ DATA
 
     protected function setUp()
     {
-        $this->dir = $this->createDir();
-        $this->loader = new XmlFileLoader(new FileLocator($this->dir));
+        $this->dir = vfsStream::setup('data');
+        $this->loader = new XmlFileLoader(new FileLocator($this->dir->url()));
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Herrera\Wise\Tests\Resource;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Resource\ResourceCollector;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\FileResource;
 
 class ResourceCollectorTest extends TestCase
@@ -24,7 +24,7 @@ class ResourceCollectorTest extends TestCase
 
         $this->assertSame(
             array($this->resource),
-            $this->getPropertyValue($this->collector, 'resources')
+            $this->collector->getResources()
         );
     }
 
@@ -38,7 +38,7 @@ class ResourceCollectorTest extends TestCase
 
         $this->assertSame(
             array(),
-            $this->getPropertyValue($this->collector, 'resources')
+            $this->collector->getResources()
         );
     }
 

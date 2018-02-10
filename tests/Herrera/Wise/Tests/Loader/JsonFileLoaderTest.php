@@ -2,8 +2,9 @@
 
 namespace Herrera\Wise\Tests\Loader;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Loader\JsonFileLoader;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 class JsonFileLoaderTest extends TestCase
@@ -23,9 +24,8 @@ class JsonFileLoaderTest extends TestCase
 
     public function testDoLoad()
     {
-        file_put_contents(
-            "{$this->dir}/test.json",
-            <<<DATA
+        $directory = [
+            'test.json' => <<<'DATA'
 {
     "imports": [
         { "resource": "import.json" }
@@ -39,18 +39,16 @@ class JsonFileLoaderTest extends TestCase
     }
 }
 DATA
-        );
-
-        file_put_contents(
-            "{$this->dir}/import.json",
-            <<<DATA
+,
+            'import.json' => <<<'DATA'
 {
     "imported": {
         "value": "imported value"
     }
 }
 DATA
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
         $this->assertSame(
             array(
@@ -71,7 +69,7 @@ DATA
 
     protected function setUp()
     {
-        $this->dir = $this->createDir();
-        $this->loader = new JsonFileLoader(new FileLocator($this->dir));
+        $this->dir = vfsStream::setup('data');
+        $this->loader = new JsonFileLoader(new FileLocator($this->dir->url()));
     }
 }

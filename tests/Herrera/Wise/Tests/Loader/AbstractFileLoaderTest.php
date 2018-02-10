@@ -3,11 +3,12 @@
 namespace Herrera\Wise\Tests\Loader;
 
 use ArrayObject;
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Loader\AbstractFileLoader;
 use Herrera\Wise\Resource\ResourceCollector;
 use Herrera\Wise\Tests\Loader\ExampleFileLoader;
 use Herrera\Wise\Wise;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 class AbstractFileLoaderTest extends TestCase
@@ -26,7 +27,7 @@ class AbstractFileLoaderTest extends TestCase
 
     public function testGetResourceCollector()
     {
-        $this->setPropertyValue($this->loader, 'collector', $this->collector);
+        $this->loader->setResourceCollector($this->collector);
 
         $this->assertSame(
             $this->collector,
@@ -38,7 +39,7 @@ class AbstractFileLoaderTest extends TestCase
     {
         $wise = new Wise();
 
-        $this->setPropertyValue($this->loader, 'wise', $wise);
+        $this->loader->setWise($wise);
 
         $this->assertSame($wise, $this->loader->getWise());
     }
@@ -46,13 +47,12 @@ class AbstractFileLoaderTest extends TestCase
     public function testLoad()
     {
         $data = array('rand' => rand());
+        $directory = [
+            'test.php' => '<?php return ' . var_export($data, true) . ';',
+        ];
+        vfsStream::create($directory, $this->dir);
 
-        file_put_contents(
-            "{$this->dir}/test.php",
-            '<?php return ' . var_export($data, true) . ';'
-        );
-
-        $this->setPropertyValue($this->loader, 'collector', $this->collector);
+        $this->loader->setResourceCollector($this->collector);
         $this->assertSame($data, $this->loader->load('test.php'));
 
         $resources = $this->collector->getResources();
@@ -113,11 +113,10 @@ class AbstractFileLoaderTest extends TestCase
             )
         );
 
-        $this->setPropertyValue($this->loader, 'wise', $wise);
+        $this->loader->setWise($wise);
 
-        file_put_contents(
-            "{$this->dir}/one.php",
-            '<?php return ' . var_export(
+        $directory = [
+            'one.php' => '<?php return ' . var_export(
                 array(
                     'imports' => array(
                         array('resource' => 'two.php')
@@ -130,12 +129,8 @@ class AbstractFileLoaderTest extends TestCase
                     '%imported.key%' => 'a value'
                 ),
                 true
-            ) . ';'
-        );
-
-        file_put_contents(
-            "{$this->dir}/two.php",
-            '<?php return ' . var_export(
+            ) . ';',
+            'two.php' => '<?php return ' . var_export(
                 array(
                     'imported' => array(
                         'key' => 'replaced_key',
@@ -147,8 +142,9 @@ class AbstractFileLoaderTest extends TestCase
                     )
                 ),
                 true
-            ) . ';'
-        );
+            ) . ';',
+        ];
+        vfsStream::create($directory, $this->dir);
 
         $this->assertEquals(
             array(
@@ -273,8 +269,8 @@ class AbstractFileLoaderTest extends TestCase
 
     protected function setUp()
     {
-        $this->dir = $this->createDir();
+        $this->dir = vfsStream::setup('data');
         $this->collector = new ResourceCollector();
-        $this->loader = new ExampleFileLoader(new FileLocator($this->dir));
+        $this->loader = new ExampleFileLoader(new FileLocator($this->dir->url()));
     }
 }

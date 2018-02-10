@@ -2,8 +2,8 @@
 
 namespace Herrera\Wise\Tests\Util;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Util\ArrayUtil;
+use PHPUnit\Framework\TestCase;
 
 class ArrayUtilTest extends TestCase
 {

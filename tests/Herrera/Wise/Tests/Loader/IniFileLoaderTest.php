@@ -2,8 +2,9 @@
 
 namespace Herrera\Wise\Tests\Loader;
 
-use Herrera\PHPUnit\TestCase;
 use Herrera\Wise\Loader\IniFileLoader;
+use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 class IniFileLoaderTest extends TestCase
@@ -23,9 +24,8 @@ class IniFileLoaderTest extends TestCase
 
     public function testDoLoad()
     {
-        file_put_contents(
-            "{$this->dir}/test.ini",
-            <<<DATA
+        $directory = [
+            'test.ini' => <<<'DATA'
 [imports]
 0[resource] = "import.ini"
 
@@ -33,15 +33,13 @@ class IniFileLoaderTest extends TestCase
 number = 123
 imported = "%imported.value%"
 DATA
-        );
-
-        file_put_contents(
-            "{$this->dir}/import.ini",
-            <<<DATA
+,
+            'import.ini' => <<<'DATA'
 [imported]
 value = "imported value"
 DATA
-        );
+        ];
+        vfsStream::create($directory, $this->dir);
 
         $this->assertSame(
             array(
@@ -62,7 +60,7 @@ DATA
 
     protected function setUp()
     {
-        $this->dir = $this->createDir();
-        $this->loader = new IniFileLoader(new FileLocator($this->dir));
+        $this->dir = vfsStream::setup('data');
+        $this->loader = new IniFileLoader(new FileLocator($this->dir->url()));
     }
 }
