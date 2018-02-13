@@ -1,7 +1,7 @@
 Wise
 ====
 
-[![Build Status]](http://travis-ci.org/herrera-io/php-wise)
+[![Build Status]](https://travis-ci.org/cyon/php-wise)
 
 Wise is a configuration manager built on Symfony [Config][]. It supports data
 formats such as INI, JSON, PHP (native), XML, and YAML. You can also normalize
@@ -19,7 +19,7 @@ Documentation
 - [Usage][]
 - [How to Create a Loader][]
 
-[Build Status]: https://secure.travis-ci.org/herrera-io/php-wise.png?branch=master
+[Build Status]: https://api.travis-ci.org/cyon/php-wise.png?branch=master
 [Config]: http://symfony.com/doc/current/components/config/index.html
 [How to Create a Loader]: doc/02-HowToCreateALoader.md
 [Installing]: doc/00-Installing.md
