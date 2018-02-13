@@ -2,7 +2,6 @@
 
 namespace Herrera\Wise\Loader;
 
-use Herrera\Json\Json as Parser;
 use Symfony\Component\Config\FileLocatorInterface;
 
 /**
@@ -12,23 +11,6 @@ use Symfony\Component\Config\FileLocatorInterface;
  */
 class JsonFileLoader extends AbstractFileLoader
 {
-    /**
-     * The JSON parser.
-     *
-     * @var Parser
-     */
-    private $json;
-
-    /**
-     * @override
-     */
-    public function __construct(FileLocatorInterface $locator)
-    {
-        parent::__construct($locator);
-
-        $this->json = new Parser();
-    }
-
     /**
      * {@inheritDoc}
      */
@@ -44,6 +26,7 @@ class JsonFileLoader extends AbstractFileLoader
      */
     protected function doLoad($file)
     {
-        return $this->json->decodeFile($file, true);
+        $fileContent = file_get_contents((string) $file);
+        return json_decode($fileContent, true);
     }
 }
