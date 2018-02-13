@@ -34,13 +34,13 @@
         "symfony/yaml": "For parsing YAML files."
     },
     "autoload": {
-        "psr-0": {
-            "Herrera\\Wise": "src/lib"
+        "psr-4": {
+            "Herrera\\Wise\\": "src"
         }
     },
     "autoload-dev": {
-        "psr-0": {
-            "Herrera\\Wise\\Tests": "tests"
+        "psr-4": {
+            "Herrera\\Wise\\Tests\\": "tests"
         }
     },
     "scripts": {

@@ -31,7 +31,7 @@ class XmlFileLoader extends AbstractFileLoader
         $doc->preserveWhiteSpace = false;
 
         $doc->load($file);
-        $doc->schemaValidate(__DIR__ . '/../../../../../res/schema.xsd');
+        $doc->schemaValidate(__DIR__ . '/../../res/schema.xsd');
 
         return $this->toArray($doc->documentElement);
     }
