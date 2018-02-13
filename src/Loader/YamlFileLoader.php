@@ -26,6 +26,7 @@ class YamlFileLoader extends AbstractFileLoader
      */
     protected function doLoad($file)
     {
-        return Parser::parse($file);
+        $fileContent = file_get_contents((string) $file);
+        return Parser::parse($fileContent);
     }
 }
