@@ -61,5 +61,5 @@ $resolver->addProcessor(new MyProcessorThree());
 // ... snip ...
 ```
 
-[Config]: http://symfony.com/doc/current/components/config/index.html
-[configuration definition]: http://symfony.com/doc/current/components/config/definition.html
+[Config]: https://symfony.com/doc/current/components/config.html
+[configuration definition]: https://symfony.com/doc/current/components/config/definition.html

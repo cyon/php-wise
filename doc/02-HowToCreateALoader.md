@@ -60,4 +60,4 @@ the resource collector and `Wise` instance, which will be set when your class
 is set as the `Wise` loader. In the `AbstractFileLoader` class provided by the
 library, this is already handled for you.
 
-[Config]: http://symfony.com/doc/current/components/config/resources.html#resource-loaders
+[Config]: https://symfony.com/doc/current/components/config/resources.html#resource-loaders

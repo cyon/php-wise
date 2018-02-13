@@ -208,5 +208,5 @@ array(
 ```
 
 [create your own loader]: 02-HowToCreateALoader.md
-[documentation]: http://symfony.com/doc/current/components/config/definition.html
+[documentation]: https://symfony.com/doc/current/components/config/definition.html
 [How to Create a Processor]: 03-HowToCreateAProcessor.md
