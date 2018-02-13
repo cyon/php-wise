@@ -31,7 +31,7 @@ imports:
 
 root:
     number: 123
-    imported: %imported.value%
+    imported: '%imported.value%'
 DATA
 ,
             'import.yml' => <<<'DATA'
