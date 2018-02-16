@@ -36,7 +36,7 @@ class PhpFileLoaderTest extends TestCase
     )
 );
 DATA
-,
+        ,
             'import.php' => <<<'DATA'
 <?php return array(
     'imported' => array(

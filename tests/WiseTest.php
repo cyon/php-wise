@@ -179,7 +179,7 @@ PHP
      */
     public function testLoadFlat()
     {
-         $directory = [
+        $directory = [
             'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(

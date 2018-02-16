@@ -39,7 +39,7 @@ class JsonFileLoaderTest extends TestCase
     }
 }
 DATA
-,
+        ,
             'import.json' => <<<'DATA'
 {
     "imported": {

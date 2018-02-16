@@ -33,7 +33,7 @@ class IniFileLoaderTest extends TestCase
 number = 123
 imported = "%imported.value%"
 DATA
-,
+        ,
             'import.ini' => <<<'DATA'
 [imported]
 value = "imported value"

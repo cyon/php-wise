@@ -40,7 +40,7 @@ class XmlFileLoaderTest extends TestCase
   </array>
 </array>
 DATA
-,
+        ,
             'import.xml' => <<<'DATA'
 <array>
   <array key="imported">

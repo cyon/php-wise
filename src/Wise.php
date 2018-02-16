@@ -331,7 +331,6 @@ class Wise
             if ($resolver instanceof WiseAwareInterface) {
                 $resolver->setWise($this);
             }
-
         }
     }
 
