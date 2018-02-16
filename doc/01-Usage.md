@@ -96,7 +96,7 @@ files. You may also use any of the loaders that have been bundled with the
 library:
 
 - `Herrera\Wise\Loader\IniFileLoader`
-- `Herrera\Wise\Loader\JsonFileLoader` &mdash; Requires `herrera-io/json`.
+- `Herrera\Wise\Loader\JsonFileLoader`
 - `Herrera\Wise\Loader\PhpFileLoader`
 - `Herrera\Wise\Loader\XmlFileLoader` &mdash; Requires the `dom` extension.
 - `Herrera\Wise\Loader\YamlFileLoader` &mdash; Requires `symfony/yaml`.
