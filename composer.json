@@ -1,21 +1,26 @@
 {
-    "name": "herrera-io/wise",
+    "name": "cyon/wise",
     "type": "library",
     "description": "Symfony Config for everyone else.",
     "keywords": [
         "config"
     ],
-    "homepage": "http://github.com/herrera-io/php-wise",
+    "homepage": "https://github.com/cyon/php-wise",
     "license": "MIT",
     "authors": [
         {
             "name": "Kevin Herrera",
             "email": "kevin@herrera.io",
             "homepage": "http://kevin.herrera.io"
+        },
+        {
+            "name": "Dominic Luechinger",
+            "email": "dol@cyon.ch",
+            "homepage": "https://www.cyon.ch"
         }
     ],
     "support": {
-        "issues": "https://github.com/herrera-io/php-wise/issues"
+        "issues": "https://github.com/cyon/php-wise/issues"
     },
     "require": {
         "php": ">=5.3.9",
