@@ -23,7 +23,7 @@
         "issues": "https://github.com/cyon/php-wise/issues"
     },
     "require": {
-        "php": ">=5.3.9",
+        "php": ">=5.4",
         "symfony/config": "^2.7 || ^3.0 || ^4.0"
     },
     "require-dev": {
