@@ -11,6 +11,9 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
+/**
+ * @coversNothing
+ */
 class AbstractFileLoaderTest extends TestCase
 {
     private $dir;
@@ -24,6 +27,13 @@ class AbstractFileLoaderTest extends TestCase
      * @var AbstractFileLoader
      */
     private $loader;
+
+    protected function setUp()
+    {
+        $this->dir = vfsStream::setup('data');
+        $this->collector = new ResourceCollector();
+        $this->loader = new ExampleFileLoader(new FileLocator($this->dir->url()));
+    }
 
     public function testGetResourceCollector()
     {
@@ -46,7 +56,7 @@ class AbstractFileLoaderTest extends TestCase
 
     public function testLoad()
     {
-        $data = array('rand' => rand());
+        $data = ['rand' => rand()];
         $directory = [
             'test.php' => '<?php return ' . var_export($data, true) . ';',
         ];
@@ -66,7 +76,7 @@ class AbstractFileLoaderTest extends TestCase
 
     public function testProcessEmpty()
     {
-        $this->assertSame(array(), $this->loader->process(null, 'test.file'));
+        $this->assertSame([], $this->loader->process(null, 'test.file'));
     }
 
     /**
@@ -75,7 +85,7 @@ class AbstractFileLoaderTest extends TestCase
      */
     public function testProcessInvalidImports()
     {
-        $this->loader->process(array('imports' => 123), 'test.file');
+        $this->loader->process(['imports' => 123], 'test.file');
     }
 
     /**
@@ -85,7 +95,7 @@ class AbstractFileLoaderTest extends TestCase
     public function testProcessInvalidImport()
     {
         $this->loader->process(
-            array('imports' => array(123)),
+            ['imports' => [123]],
             'test.file'
         );
     }
@@ -97,7 +107,7 @@ class AbstractFileLoaderTest extends TestCase
     public function testProcessInvalidImportMissingResource()
     {
         $this->loader->process(
-            array('imports' => array(array())),
+            ['imports' => [[]]],
             'test.file'
         );
     }
@@ -106,71 +116,72 @@ class AbstractFileLoaderTest extends TestCase
     {
         $wise = new Wise();
         $wise->setGlobalParameters(
-            array(
-                'global' => array(
-                    'value' => 999
-                )
-            )
+            [
+                'global' => [
+                    'value' => 999,
+                ],
+            ]
         );
 
         $this->loader->setWise($wise);
 
+        $rand = rand();
         $directory = [
             'one.php' => '<?php return ' . var_export(
-                array(
-                    'imports' => array(
-                        array('resource' => 'two.php')
-                    ),
+                [
+                    'imports' => [
+                        ['resource' => 'two.php'],
+                    ],
                     'global' => '%global.value%',
                     'placeholder' => '%imported.list%',
-                    'sub' => array(
+                    'sub' => [
                         'inline_placeholder' => 'rand: %imported.list.null%%imported.value%',
-                    ),
-                    '%imported.key%' => 'a value'
-                ),
+                    ],
+                    '%imported.key%' => 'a value',
+                ],
                 true
             ) . ';',
             'two.php' => '<?php return ' . var_export(
-                array(
-                    'imported' => array(
+                [
+                    'imported' => [
                         'key' => 'replaced_key',
-                        'list' => array(
+                        'list' => [
                             'null' => null,
-                            'value' => 123
-                        ),
-                        'value' => $rand = rand()
-                    )
-                ),
+                            'value' => 123,
+                        ],
+                        'value' => $rand,
+                    ],
+                ],
                 true
             ) . ';',
         ];
         vfsStream::create($directory, $this->dir);
 
-        $this->assertEquals(
-            array(
-                'imports' => array(
-                    array(
-                        'resource' => 'two.php'
-                    )
-                ),
-                'global' => 999,
-                'placeholder' => array(
-                    'null' => null,
-                    'value' => 123
-                ),
-                'sub' => array(
-                    'inline_placeholder' => 'rand: ' . $rand,
-                ),
-                'replaced_key' => 'a value',
-                'imported' => array(
+        $this->assertSame(
+            [
+                'imported' => [
                     'key' => 'replaced_key',
-                    'list' => array(
+                    'list' => [
                         'null' => null,
-                        'value' => 123
-                    ),
-                    'value' => $rand
-                )
-            ),
+                        'value' => 123,
+                    ],
+                    'value' => $rand,
+                ],
+                'imports' => [
+                    [
+                        'resource' => 'two.php',
+                    ],
+                ],
+                'global' => 999,
+                'placeholder' => [
+                    'null' => null,
+                    'value' => 123,
+                ],
+                'sub' => [
+                    'inline_placeholder' => 'rand: ' . $rand,
+                ],
+                'replaced_key' => 'a value',
+            ],
             $this->loader->load('one.php')
         );
     }
@@ -182,9 +193,9 @@ class AbstractFileLoaderTest extends TestCase
     public function testProcessInvalidReference()
     {
         $this->loader->process(
-            array(
-                'bad_reference' => '%test.reference%'
-            ),
+            [
+                'bad_reference' => '%test.reference%',
+            ],
             'test.php'
         );
     }
@@ -196,14 +207,14 @@ class AbstractFileLoaderTest extends TestCase
     public function testProcessNonScalarReference()
     {
         $this->loader->process(
-            array(
+            [
                 'bad_reference' => 'bad: %test.reference%',
-                'test' => array(
-                    'reference' => array(
-                        'value' => 123
-                    )
-                )
-            ),
+                'test' => [
+                    'reference' => [
+                        'value' => 123,
+                    ],
+                ],
+            ],
             'test.php'
         );
     }
@@ -214,29 +225,29 @@ class AbstractFileLoaderTest extends TestCase
      */
     public function testResolveReferenceInvalid()
     {
-        $this->loader->resolveReference('a.b.c.d', array());
+        $this->loader->resolveReference('a.b.c.d', []);
     }
 
     public function testResolveReference()
     {
-        $array = array(
-            'a' => array(
-                'b' => array(
-                    'c' => array(
-                        'd' => 123
-                    )
-                )
-            )
-        );
+        $array = [
+            'a' => [
+                'b' => [
+                    'c' => [
+                        'd' => 123,
+                    ],
+                ],
+            ],
+        ];
 
         $object = new ArrayObject($array);
 
-        $this->assertEquals(
+        $this->assertSame(
             123,
             $this->loader->resolveReference('a.b.c.d', $array)
         );
 
-        $this->assertEquals(
+        $this->assertSame(
             123,
             $this->loader->resolveReference('a.b.c.d', $object)
         );
@@ -265,12 +276,5 @@ class AbstractFileLoaderTest extends TestCase
         $this->loader->setWise($wise);
 
         $this->assertSame($wise, $this->loader->getWise());
-    }
-
-    protected function setUp()
-    {
-        $this->dir = vfsStream::setup('data');
-        $this->collector = new ResourceCollector();
-        $this->loader = new ExampleFileLoader(new FileLocator($this->dir->url()));
     }
 }

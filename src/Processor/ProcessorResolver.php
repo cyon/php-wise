@@ -14,14 +14,14 @@ class ProcessorResolver implements ProcessorResolverInterface
      *
      * @var ProcessorInterface[]
      */
-    private $processors = array();
+    private $processors = [];
 
     /**
      * Sets processors in the resolver.
      *
      * @param ProcessorInterface[] $processors The processors.
      */
-    public function __construct(array $processors = array())
+    public function __construct(array $processors = [])
     {
         foreach ($processors as $processor) {
             $this->addProcessor($processor);

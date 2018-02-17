@@ -6,6 +6,9 @@ use Herrera\Wise\Processor\AbstractProcessor;
 use Herrera\Wise\Processor\ProcessorResolver;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class AbstractProcessorTest extends TestCase
 {
     /**
@@ -18,11 +21,17 @@ class AbstractProcessorTest extends TestCase
      */
     private $resolver;
 
+    protected function setUp()
+    {
+        $this->processor = new ExampleProcessor();
+        $this->resolver = new ProcessorResolver();
+    }
+
     public function testProcess()
     {
         $this->assertSame(
-            array('enabled' => false),
-            $this->processor->process(array())
+            ['enabled' => false],
+            $this->processor->process([])
         );
     }
 
@@ -31,11 +40,5 @@ class AbstractProcessorTest extends TestCase
         $this->processor->setResolver($this->resolver);
 
         $this->assertSame($this->resolver, $this->processor->getResolver());
-    }
-
-    protected function setUp()
-    {
-        $this->processor = new ExampleProcessor();
-        $this->resolver = new ProcessorResolver();
     }
 }

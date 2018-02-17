@@ -13,11 +13,11 @@ class TestProcessor extends AbstractProcessor
         $root = $builder->root('root');
 
         $root->children()
-                 ->booleanNode('enabled')
-                     ->defaultFalse()
-                 ->end()
-                 ->integerNode('number')->end()
-             ->end();
+            ->booleanNode('enabled')
+            ->defaultFalse()
+            ->end()
+            ->integerNode('number')->end()
+            ->end();
 
         return $builder;
     }

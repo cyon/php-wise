@@ -15,7 +15,7 @@ interface ProcessorResolverInterface
      * @param mixed  $resource The resource.
      * @param string $type     The resource type.
      *
-     * @return ProcessorInterface|boolean The processor, or FALSE if none.
+     * @return boolean|ProcessorInterface The processor, or FALSE if none.
      */
     public function resolve($resource, $type = null);
 }

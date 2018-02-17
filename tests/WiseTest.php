@@ -12,6 +12,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 
+/**
+ * @coversNothing
+ */
 class WiseTest extends TestCase
 {
     /**
@@ -44,6 +47,20 @@ class WiseTest extends TestCase
      */
     private $wise;
 
+    protected function setUp()
+    {
+        $this->root = vfsStream::setup('root');
+        $this->cache = vfsStream::url('root/cache');
+        $this->dir = vfsStream::newDirectory('data')->at($this->root);
+
+        $this->collector = new ResourceCollector();
+        $this->loader = new PhpFileLoader(new FileLocator($this->dir->url()));
+        $this->processor = new TestProcessor();
+        $this->wise = new Wise(true);
+
+        $this->loader->setResourceCollector($this->collector);
+    }
+
     public function testConstruct()
     {
         $wise = new Wise();
@@ -64,13 +81,13 @@ PHP
         vfsStream::create($directory, $this->dir);
 
         $wise = Wise::create($this->dir->url(), $this->cache, true);
-        $expected = array(
-            'root' => array(
-                'number' => 123
-            )
-        );
+        $expected = [
+            'root' => [
+                'number' => 123,
+            ],
+        ];
 
-        $this->assertEquals($expected, $wise->load('test.php', 'php'));
+        $this->assertSame($expected, $wise->load('test.php', 'php'));
         $this->assertFileExists($this->cache . '/test.php.cache');
         $this->assertFileExists($this->cache . '/test.php.cache.meta');
 
@@ -127,19 +144,19 @@ PHP
         ];
         vfsStream::create($directory, $this->dir);
 
-        $expected = array(
+        $expected = [
+            'number' => 123,
             'enabled' => false,
-            'number' => '123'
-        );
+        ];
 
         $this->wise->setLoader($this->loader);
 
-        $this->assertEquals(
-            array(
-                'root' => array(
-                    'number' => 123
-                )
-            ),
+        $this->assertSame(
+            [
+                'root' => [
+                    'number' => 123,
+                ],
+            ],
             $this->wise->load('test.php', 'php')
         );
 
@@ -147,12 +164,12 @@ PHP
         $this->wise->setCollector($this->collector);
         $this->wise->setProcessor($this->processor);
 
-        $this->assertEquals($expected, $this->wise->load('test.php', 'php'));
+        $this->assertSame($expected, $this->wise->load('test.php', 'php'));
         $this->assertFileExists($this->cache . '/test.php.cache');
         $this->assertFileExists($this->cache . '/test.php.cache.meta');
 
         /** @noinspection PhpIncludeInspection */
-        $this->assertEquals($expected, require $this->cache . '/test.php.cache');
+        $this->assertSame($expected, require $this->cache . '/test.php.cache');
 
         $meta = unserialize(
             file_get_contents(
@@ -171,7 +188,7 @@ PHP
             filemtime($this->cache . '/test.php.cache') - 1000
         );
 
-        $this->assertEquals($expected, $this->wise->load('test.php', 'php'));
+        $this->assertSame($expected, $this->wise->load('test.php', 'php'));
     }
 
     /**
@@ -192,10 +209,10 @@ PHP
 
         $this->wise->setLoader($this->loader);
 
-        $this->assertEquals(
-            array(
-                'root.number' => 123
-            ),
+        $this->assertSame(
+            [
+                'root.number' => 123,
+            ],
             $this->wise->loadFlat('test.php', 'php')
         );
     }
@@ -206,7 +223,7 @@ PHP
             'test.php' => <<<'PHP'
 <?php return array(
     'root' => array(
-        'number' => 123
+        'number' => 123,
     )
 );
 PHP
@@ -215,12 +232,11 @@ PHP
 
         $this->wise->setLoader($this->loader);
         $this->wise->setProcessor(new BasicProcessor());
-
-        $this->assertEquals(
-            array(
+        $this->assertSame(
+            [
+                'number' => 123,
                 'enabled' => false,
-                'number' => 123
-            ),
+            ],
             $this->wise->load('test.php', 'php')
         );
     }
@@ -274,7 +290,7 @@ PHP
     {
         $this->wise->setCacheDir($this->cache);
 
-        $this->assertEquals($this->cache, $this->wise->getCacheDir());
+        $this->assertSame($this->cache, $this->wise->getCacheDir());
     }
 
     public function testSetCollector()
@@ -304,10 +320,10 @@ PHP
 
     public function testSetGlobalParameters()
     {
-        $this->wise->setGlobalParameters(array('value' => 123));
+        $this->wise->setGlobalParameters(['value' => 123]);
 
-        $this->assertEquals(
-            array('value' => 123),
+        $this->assertSame(
+            ['value' => 123],
             $this->wise->getGlobalParameters()
         );
     }
@@ -362,19 +378,5 @@ PHP
         $this->wise->setProcessor($processor);
 
         $this->assertSame($processor, $this->wise->getProcessor());
-    }
-
-    protected function setUp()
-    {
-        $this->root = vfsStream::setup('root');
-        $this->cache = vfsStream::url('root/cache');
-        $this->dir = vfsStream::newDirectory('data')->at($this->root);
-
-        $this->collector = new ResourceCollector();
-        $this->loader = new PhpFileLoader(new FileLocator($this->dir->url()));
-        $this->processor = new TestProcessor();
-        $this->wise = new Wise(true);
-
-        $this->loader->setResourceCollector($this->collector);
     }
 }

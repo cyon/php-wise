@@ -20,7 +20,7 @@ class ArrayUtil
      */
     public static function flatten(array $array, $prefix = '', $join = '.')
     {
-        $flat = array();
+        $flat = [];
 
         foreach ($array as $key => $value) {
             $key = $prefix ? $prefix . $join . $key : $key;

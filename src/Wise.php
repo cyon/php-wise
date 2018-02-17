@@ -59,7 +59,7 @@ class Wise
      *
      * @var array
      */
-    private $parameters = array();
+    private $parameters = [];
 
     /**
      * The configuration processor.
@@ -97,13 +97,13 @@ class Wise
 
         $locator = new FileLocator($paths);
         $resolver = new LoaderResolver(
-            array(
+            [
                 new Loader\IniFileLoader($locator),
                 new Loader\JsonFileLoader($locator),
                 new Loader\PhpFileLoader($locator),
                 new Loader\XmlFileLoader($locator),
                 new Loader\YamlFileLoader($locator),
-            )
+            ]
         );
 
         $wise->setCollector(new Resource\ResourceCollector());
@@ -182,10 +182,10 @@ class Wise
      * @param string  $type     The resource type.
      * @param boolean $require  Require processing?
      *
-     * @return array The data.
-     *
      * @throws LoaderException If the loader could not be used.
      * @throws LogicException  If no loader has been configured.
+     * @return array The data.
+     *
      */
     public function load($resource, $type = null, $require = false)
     {
@@ -197,7 +197,7 @@ class Wise
             throw LoaderException::format(
                 'The resource "%s"%s is not supported by the loader.',
                 is_scalar($resource) ? $resource : gettype($resource),
-                $type ? " ($type)" : ''
+                $type ? " (${type})" : ''
             );
         }
 
@@ -352,10 +352,10 @@ class Wise
      * @param string  $type     The resource type.
      * @param boolean $require  Require processing?
      *
-     * @return array The processed configuration data.
-     *
      * @throws ProcessorException If the processor could not be used and it is
      *                            require that one be used.
+     * @return array The processed configuration data.
+     *
      */
     private function process(array $data, $resource, $type, $require)
     {
@@ -367,7 +367,7 @@ class Wise
                     throw ProcessorException::format(
                         'The resource "%s"%s is not supported by the processor.',
                         is_string($resource) ? $resource : gettype($resource),
-                        $type ? " ($type)" : ''
+                        $type ? " (${type})" : ''
                     );
                 }
             } else {

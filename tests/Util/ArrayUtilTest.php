@@ -5,45 +5,48 @@ namespace Herrera\Wise\Tests\Util;
 use Herrera\Wise\Util\ArrayUtil;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class ArrayUtilTest extends TestCase
 {
     public function testFlatten()
     {
-        $this->assertEquals(
-            array(
+        $this->assertSame(
+            [
                 'one' => 1,
                 'sub.two' => 2,
-                'sub.sub.three' => 3
-            ),
+                'sub.sub.three' => 3,
+            ],
             ArrayUtil::flatten(
-                array(
+                [
                     'one' => 1,
-                    'sub' => array(
+                    'sub' => [
                         'two' => 2,
-                        'sub' => array(
-                            'three' => 3
-                        )
-                    )
-                )
+                        'sub' => [
+                            'three' => 3,
+                        ],
+                    ],
+                ]
             )
         );
     }
 
     public function testWalkRecursive()
     {
-        $expected = $actual = array(
-            'one' => array(
-                'two' => array(
-                    'three' => array(
+        $expected = $actual = [
+            'one' => [
+                'two' => [
+                    'three' => [
                         'four' => 'eight',
                         'twelve' => 'thirteen',
-                    ),
+                    ],
                     'five' => 'nine',
-                ),
+                ],
                 'six' => 'ten',
-            ),
+            ],
             'seven' => 'eleven',
-        );
+        ];
 
         ArrayUtil::walkRecursive(
             $actual,

@@ -23,10 +23,12 @@ class JsonFileLoader extends AbstractFileLoader
 
     /**
      * @override
+     * @param mixed $file
      */
     protected function doLoad($file)
     {
         $fileContent = file_get_contents((string) $file);
+
         return json_decode($fileContent, true);
     }
 }

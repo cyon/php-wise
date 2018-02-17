@@ -5,6 +5,9 @@ namespace Herrera\Wise\Tests\Processor;
 use Herrera\Wise\Processor\ProcessorResolver;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversNothing
+ */
 class ProcessorResolverTest extends TestCase
 {
     /**
@@ -17,10 +20,16 @@ class ProcessorResolverTest extends TestCase
      */
     private $resolver;
 
+    protected function setUp()
+    {
+        $this->processor = new ExampleProcessor();
+        $this->resolver = new ProcessorResolver([$this->processor]);
+    }
+
     public function testGetProcessors()
     {
         $this->assertSame(
-            array($this->processor),
+            [$this->processor],
             $this->resolver->getProcessors()
         );
     }
@@ -31,7 +40,7 @@ class ProcessorResolverTest extends TestCase
         $resolver->addProcessor($this->processor);
 
         $this->assertSame(
-            array($this->processor),
+            [$this->processor],
             $this->resolver->getProcessors()
         );
     }
@@ -41,13 +50,7 @@ class ProcessorResolverTest extends TestCase
         $this->assertFalse($this->resolver->resolve('test'));
         $this->assertSame(
             $this->processor,
-            $this->resolver->resolve(array(), 'example')
+            $this->resolver->resolve([], 'example')
         );
-    }
-
-    protected function setUp()
-    {
-        $this->processor = new ExampleProcessor();
-        $this->resolver = new ProcessorResolver(array($this->processor));
     }
 }

@@ -7,6 +7,9 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
+/**
+ * @coversNothing
+ */
 class JsonFileLoaderTest extends TestCase
 {
     private $dir;
@@ -15,6 +18,12 @@ class JsonFileLoaderTest extends TestCase
      * @var JsonFileLoader
      */
     private $loader;
+
+    protected function setUp()
+    {
+        $this->dir = vfsStream::setup('data');
+        $this->loader = new JsonFileLoader(new FileLocator($this->dir->url()));
+    }
 
     public function testSupports()
     {
@@ -51,25 +60,19 @@ DATA
         vfsStream::create($directory, $this->dir);
 
         $this->assertSame(
-            array(
-                'imported' => array(
-                    'value' => 'imported value'
-                ),
-                'imports' => array(
-                    array('resource' => 'import.json')
-                ),
-                'root' => array(
+            [
+                'imported' => [
+                    'value' => 'imported value',
+                ],
+                'imports' => [
+                    ['resource' => 'import.json'],
+                ],
+                'root' => [
                     'number' => 123,
-                    'imported' => 'imported value'
-                ),
-            ),
+                    'imported' => 'imported value',
+                ],
+            ],
             $this->loader->load('test.json')
         );
-    }
-
-    protected function setUp()
-    {
-        $this->dir = vfsStream::setup('data');
-        $this->loader = new JsonFileLoader(new FileLocator($this->dir->url()));
     }
 }

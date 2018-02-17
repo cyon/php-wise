@@ -9,6 +9,9 @@ use Herrera\Wise\Wise;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
+/**
+ * @coversNothing
+ */
 class LoaderResolverTest extends TestCase
 {
     /**
@@ -25,6 +28,13 @@ class LoaderResolverTest extends TestCase
      * @var Wise
      */
     private $wise;
+
+    protected function setUp()
+    {
+        $this->collector = new ResourceCollector();
+        $this->resolver = new LoaderResolver();
+        $this->wise = new Wise();
+    }
 
     public function testAddLoader()
     {
@@ -74,12 +84,5 @@ class LoaderResolverTest extends TestCase
         $this->resolver->setWise($this->wise);
 
         $this->assertSame($this->wise, $loader->getWise());
-    }
-
-    protected function setUp()
-    {
-        $this->collector = new ResourceCollector();
-        $this->resolver = new LoaderResolver();
-        $this->wise = new Wise();
     }
 }

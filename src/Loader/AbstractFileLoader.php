@@ -41,9 +41,9 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
      * @param array $data   The data the input is from.
      * @param array $global The global values.
      *
+     * @throws InvalidReferenceException If an invalid reference is used.
      * @return mixed The result.
      *
-     * @throws InvalidReferenceException If an invalid reference is used.
      */
     public function doReplace($input, $data, $global)
     {
@@ -67,17 +67,17 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
 
                 if ((false === is_null($ref))
                     && (false === is_scalar($ref))
-                    && (false == preg_match('/^%(?:[^%]+)%$/', $input))) {
+                    && (1 !== preg_match('/^%(?:[^%]+)%$/', $input))) {
                     throw InvalidReferenceException::format(
                         'The non-scalar reference "%s" cannot be used inline.',
-                        "%$reference%"
+                        "%${reference}%"
                     );
                 }
 
-                if ("%$reference%" === $input) {
+                if ("%${reference}%" === $input) {
                     $input = $ref;
                 } else {
-                    $input = str_replace("%$reference%", $ref, $input);
+                    $input = str_replace("%${reference}%", $ref, $input);
                 }
             }
         }
@@ -123,15 +123,15 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
      * @param array  $data The data.
      * @param string $file The file source.
      *
-     * @return array The processed data.
-     *
      * @throws ImportException           If "imports" is invalid.
      * @throws InvalidReferenceException If an invalid reference is used.
+     * @return array The processed data.
+     *
      */
     public function process($data, $file)
     {
         if (empty($data)) {
-            return array();
+            return [];
         }
 
         if (isset($data['imports'])) {
@@ -173,7 +173,7 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
             }
         }
 
-        $global = $this->wise ? $this->wise->getGlobalParameters() : array();
+        $global = $this->wise ? $this->wise->getGlobalParameters() : [];
         $_this = $this;
 
         ArrayUtil::walkRecursive(
@@ -200,9 +200,9 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
      * @param string            $reference A reference.
      * @param array|ArrayAccess $values    A list of values.
      *
+     * @throws InvalidReferenceException If the reference is not valid.
      * @return mixed The referenced value.
      *
-     * @throws InvalidReferenceException If the reference is not valid.
      */
     public function resolveReference($reference, $values)
     {
@@ -212,7 +212,7 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
                 || (($values instanceof ArrayAccess) && !$values->offsetExists($leaf))) {
                 throw InvalidReferenceException::format(
                     'The reference "%s" could not be resolved (failed at "%s").',
-                    "%$reference%",
+                    "%${reference}%",
                     $leaf
                 );
             }

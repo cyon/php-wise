@@ -23,10 +23,12 @@ class YamlFileLoader extends AbstractFileLoader
 
     /**
      * @override
+     * @param mixed $file
      */
     protected function doLoad($file)
     {
         $fileContent = file_get_contents((string) $file);
+
         return Parser::parse($fileContent);
     }
 }

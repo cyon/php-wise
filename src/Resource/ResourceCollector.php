@@ -16,7 +16,7 @@ class ResourceCollector implements ResourceCollectorInterface
      *
      * @var ResourceInterface[]
      */
-    private $resources = array();
+    private $resources = [];
 
     /**
      * {@inheritDoc}
@@ -31,7 +31,7 @@ class ResourceCollector implements ResourceCollectorInterface
      */
     public function clearResources()
     {
-        $this->resources = array();
+        $this->resources = [];
     }
 
     /**

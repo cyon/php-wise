@@ -6,6 +6,9 @@ use Herrera\Wise\Resource\ResourceCollector;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\FileResource;
 
+/**
+ * @coversNothing
+ */
 class ResourceCollectorTest extends TestCase
 {
     /**
@@ -18,12 +21,18 @@ class ResourceCollectorTest extends TestCase
      */
     private $resource;
 
+    protected function setUp()
+    {
+        $this->collector = new ResourceCollector();
+        $this->resource = new FileResource(__FILE__);
+    }
+
     public function testAddResource()
     {
         $this->collector->addResource($this->resource);
 
         $this->assertSame(
-            array($this->resource),
+            [$this->resource],
             $this->collector->getResources()
         );
     }
@@ -37,7 +46,7 @@ class ResourceCollectorTest extends TestCase
         $this->collector->clearResources();
 
         $this->assertSame(
-            array(),
+            [],
             $this->collector->getResources()
         );
     }
@@ -50,14 +59,8 @@ class ResourceCollectorTest extends TestCase
         $this->collector->addResource($this->resource);
 
         $this->assertSame(
-            array($this->resource),
+            [$this->resource],
             $this->collector->getResources()
         );
-    }
-
-    protected function setUp()
-    {
-        $this->collector = new ResourceCollector();
-        $this->resource = new FileResource(__FILE__);
     }
 }

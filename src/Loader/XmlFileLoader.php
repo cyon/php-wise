@@ -24,6 +24,7 @@ class XmlFileLoader extends AbstractFileLoader
 
     /**
      * @override
+     * @param mixed $file
      */
     protected function doLoad($file)
     {
@@ -49,7 +50,7 @@ class XmlFileLoader extends AbstractFileLoader
 
         switch ($node->nodeName) {
             case 'array':
-                $value = array();
+                $value = [];
 
                 if ($node->hasChildNodes()) {
                     for ($i = 0; $i < $node->childNodes->length; $i++) {
@@ -63,18 +64,23 @@ class XmlFileLoader extends AbstractFileLoader
                         }
                     }
                 }
+
                 break;
             case 'bool':
                 $value = (bool) $node->textContent;
+
                 break;
             case 'float':
                 $value = (float) $node->textContent;
+
                 break;
             case 'int':
                 $value = (int) $node->textContent;
+
                 break;
             case 'str':
                 $value = $node->textContent;
+
                 break;
         }
 

@@ -21,6 +21,7 @@ class IniFileLoader extends AbstractFileLoader
 
     /**
      * @override
+     * @param mixed $file
      */
     protected function doLoad($file)
     {

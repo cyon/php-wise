@@ -13,10 +13,10 @@ class ExampleProcessor extends AbstractProcessor
         $root = $builder->root('example');
 
         $root->children()
-                 ->booleanNode('enabled')
-                     ->defaultFalse()
-                 ->end()
-             ->end();
+            ->booleanNode('enabled')
+            ->defaultFalse()
+            ->end()
+            ->end();
 
         return $builder;
     }
