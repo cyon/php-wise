@@ -94,5 +94,5 @@ script:
     --path-mode=intersection
     --using-cache=no
     --verbose
-    $(git diff --diff-filter=d --name-only $TRAVIS_COMMIT_RANGE)
+    $(git diff --name-only --diff-filter=ACMRTUXB "${TRAVIS_COMMIT_RANGE}")
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
