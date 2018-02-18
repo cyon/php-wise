@@ -87,5 +87,12 @@ install:
   - travis_wait composer install $DEFAULT_COMPOSER_FLAGS
 
 script:
-  # - vendor/bin/phpcs --standard=psr2 src/
+  - >-
+    vendor/bin/php-cs-fixer fix
+    --config=.php_cs.dist
+    --dry-run
+    --path-mode=intersection
+    --using-cache=no
+    --verbose
+    $(git diff --diff-filter=d --name-only $TRAVIS_COMMIT_RANGE)
   - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
