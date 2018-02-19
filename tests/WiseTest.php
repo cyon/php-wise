@@ -13,7 +13,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Wise
  */
 class WiseTest extends TestCase
 {

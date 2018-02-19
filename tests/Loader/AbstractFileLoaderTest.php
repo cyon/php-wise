@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Loader\AbstractFileLoader
  */
 class AbstractFileLoaderTest extends TestCase
 {

@@ -10,7 +10,8 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Loader\LoaderResolver
+ * @covers \Herrera\Wise\Resource\ResourceCollector
  */
 class LoaderResolverTest extends TestCase
 {

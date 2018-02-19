@@ -5,7 +5,7 @@ namespace Herrera\Wise\Tests\Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Exception\AbstractException
  */
 class AbstractExceptionTest extends TestCase
 {

@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Resource\FileResource;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Resource\ResourceCollector
  */
 class ResourceCollectorTest extends TestCase
 {

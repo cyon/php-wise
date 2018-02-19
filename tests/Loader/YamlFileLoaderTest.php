@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Loader\YamlFileLoader
  */
 class YamlFileLoaderTest extends TestCase
 {

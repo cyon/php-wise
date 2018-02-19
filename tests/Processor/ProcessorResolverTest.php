@@ -6,7 +6,7 @@ use Herrera\Wise\Processor\ProcessorResolver;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Processor\ProcessorResolver
  */
 class ProcessorResolverTest extends TestCase
 {

@@ -7,7 +7,7 @@ use Herrera\Wise\Processor\ProcessorResolver;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Processor\DelegatingProcessor
  */
 class DelegatingProcessorTest extends TestCase
 {

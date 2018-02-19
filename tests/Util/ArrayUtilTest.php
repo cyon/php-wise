@@ -6,7 +6,7 @@ use Herrera\Wise\Util\ArrayUtil;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversNothing
+ * @covers \Herrera\Wise\Util\ArrayUtil
  */
 class ArrayUtilTest extends TestCase
 {
@@ -30,6 +30,30 @@ class ArrayUtilTest extends TestCase
                 ]
             )
         );
+    }
+
+    public function testFlattenPrefix()
+    {
+        $expected =             [
+            'pre-one' => 1,
+            'pre-sub-two' => 2,
+            'pre-sub-sub-three' => 3,
+        ];
+
+        $actual = ArrayUtil::flatten(
+            [
+                'one' => 1,
+                'sub' => [
+                    'two' => 2,
+                    'sub' => [
+                        'three' => 3,
+                    ],
+                ],
+            ],
+            'pre',
+            '-'
+        );
+        $this->assertSame($expected, $actual);
     }
 
     public function testWalkRecursive()
