@@ -1,99 +1,62 @@
 dist: trusty
-language: php
-
 # This triggers builds to run on the new TravisCI infrastructure.
 # See: https://docs.travis-ci.com/user/reference/overview/#Virtualisation-Environment-vs-Operating-System
 sudo: false
 
-env:
-  global:
-    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+language: php
+php:
+    - 5.5
+    - 5.6
+    - 7.0
+    - 7.1
+    - 7.2
 
-branches:
-  only:
-    - master
-    - refactor
+env:
+    global:
+        - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+    matrix:
+        - SYMFONY_CONFIG_VERSION=
+        - SYMFONY_CONFIG_VERSION=2.7.*
+        - SYMFONY_CONFIG_VERSION=2.8.*
+        - SYMFONY_CONFIG_VERSION=3.3.*
+        - SYMFONY_CONFIG_VERSION=3.4.*
+        - SYMFONY_CONFIG_VERSION=4.0.*
 
 matrix:
-  fast_finish: true
-  include:
-    # Pick a symfony config version
-    - php: 5.5
-    - php: 5.6
-    - php: 7.0
-    - php: 7.1
-    - php: 7.2
-      # 2.7.*
-    - php: 5.5
-      env: SYMFONY_CONFIG_VERSION=2.7.*
-    - php: 5.6
-      env: SYMFONY_CONFIG_VERSION=2.7.*
-    - php: 7.0
-      env: SYMFONY_CONFIG_VERSION=2.7.*
-    - php: 7.1
-      env: SYMFONY_CONFIG_VERSION=2.7.*
-    - php: 7.2
-      env: SYMFONY_CONFIG_VERSION=2.7.*
-      # 2.8.*
-    - php: 5.5
-      env: SYMFONY_CONFIG_VERSION=2.8.*
-    - php: 5.6
-      env: SYMFONY_CONFIG_VERSION=2.8.*
-    - php: 7.0
-      env: SYMFONY_CONFIG_VERSION=2.8.*
-    - php: 7.1
-      env: SYMFONY_CONFIG_VERSION=2.8.*
-    - php: 7.2
-      env: SYMFONY_CONFIG_VERSION=2.8.*
-      # 3.3.*
-    - php: 5.5
-      env: SYMFONY_CONFIG_VERSION=3.3.*
-    - php: 5.6
-      env: SYMFONY_CONFIG_VERSION=3.3.*
-    - php: 7.0
-      env: SYMFONY_CONFIG_VERSION=3.3.*
-    - php: 7.1
-      env: SYMFONY_CONFIG_VERSION=3.3.*
-    - php: 7.2
-      env: SYMFONY_CONFIG_VERSION=3.3.*
-      # 3.4.*
-    - php: 5.5
-      env: SYMFONY_CONFIG_VERSION=3.4.*
-    - php: 5.6
-      env: SYMFONY_CONFIG_VERSION=3.4.*
-    - php: 7.0
-      env: SYMFONY_CONFIG_VERSION=3.4.*
-    - php: 7.1
-      env: SYMFONY_CONFIG_VERSION=3.4.*
-    - php: 7.2
-      env: SYMFONY_CONFIG_VERSION=3.4.*
-      # 4.0.*
-    - php: 7.1
-      env: SYMFONY_CONFIG_VERSION=4.0.*
-    - php: 7.2
-      env: SYMFONY_CONFIG_VERSION=4.0.*
+    include:
+        - php: 7.1
+          env: PHP_CS_FIXER=1
+    exclude:
+        - php: 5.5
+          env: SYMFONY_CONFIG_VERSION=4.0.*
+        - php: 5.6
+          env: SYMFONY_CONFIG_VERSION=4.0.*
+        - php: 7.0
+          env: SYMFONY_CONFIG_VERSION=4.0.*
 
 ## Cache composer
 cache:
-  directories:
-    - $HOME/.composer/cache
+    directories:
+        - $HOME/.composer/cache
 
 before_install:
-  - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - travis_retry composer selfupdate
-  - if [ "$SYMFONY_CONFIG_VERSION" != "" ]; then composer require "symfony/config:${SYMFONY_CONFIG_VERSION}" --no-update; fi;
-  - travis_retry wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar
+    - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - travis_retry composer selfupdate
+    - if [ "${SYMFONY_CONFIG_VERSION}" != "" ]; then composer require "symfony/config:${SYMFONY_CONFIG_VERSION}" --no-update; fi;
+    - travis_retry wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar
 
 install:
-  - travis_wait composer install $DEFAULT_COMPOSER_FLAGS
+    - travis_wait composer install $DEFAULT_COMPOSER_FLAGS
 
 script:
-  - >-
-    php php-cs-fixer-v2.phar fix
-    --config=.php_cs.dist
-    --dry-run
-    --path-mode=intersection
-    --using-cache=no
-    --verbose
-    $(git diff --name-only --diff-filter=ACMRTUXB "${TRAVIS_COMMIT_RANGE}")
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+    - |
+      if ! [ -z ${PHP_CS_FIXER+x} ]; then
+          php php-cs-fixer-v2.phar fix \
+          --config=.php_cs.dist \
+          --dry-run \
+          --path-mode=intersection \
+          --using-cache=no \
+          --verbose \
+          $(git diff --name-only --diff-filter=ACMRTUXB "${TRAVIS_COMMIT_RANGE}");
+      fi
+    - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
