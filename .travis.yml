@@ -5,6 +5,7 @@ sudo: false
 
 language: php
 php:
+    - 5.4
     - 5.5
     - 5.6
     - 7.0
@@ -27,6 +28,12 @@ matrix:
         - php: 7.1
           env: PHP_CS_FIXER=1
     exclude:
+        - php: 5.4
+          env: SYMFONY_CONFIG_VERSION=3.3.*
+        - php: 5.4
+          env: SYMFONY_CONFIG_VERSION=3.4.*
+        - php: 5.4
+          env: SYMFONY_CONFIG_VERSION=4.0.*
         - php: 5.5
           env: SYMFONY_CONFIG_VERSION=4.0.*
         - php: 5.6
