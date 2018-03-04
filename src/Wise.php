@@ -196,14 +196,14 @@ class Wise
         if (false === $this->loader->supports($resource, $type)) {
             throw LoaderException::format(
                 'The resource "%s"%s is not supported by the loader.',
-                is_scalar($resource) ? $resource : gettype($resource),
+                is_scalar($resource) ? $resource : \gettype($resource),
                 $type ? " (${type})" : ''
             );
         }
 
         if ($this->cacheDir
             && $this->collector
-            && is_string($resource)
+            && \is_string($resource)
             && (false === strpos("\n", $resource))
             && (false === strpos("\r", $resource))) {
             $cache = new ConfigCache(
@@ -295,7 +295,7 @@ class Wise
      */
     public function setGlobalParameters($parameters)
     {
-        if (!is_array($parameters) && !($parameters instanceof ArrayAccess)) {
+        if (!\is_array($parameters) && !($parameters instanceof ArrayAccess)) {
             throw new InvalidArgumentException(
                 'The $parameters argument must be an array or array accessible object.'
             );
@@ -366,7 +366,7 @@ class Wise
                 } elseif ($require) {
                     throw ProcessorException::format(
                         'The resource "%s"%s is not supported by the processor.',
-                        is_string($resource) ? $resource : gettype($resource),
+                        \is_string($resource) ? $resource : \gettype($resource),
                         $type ? " (${type})" : ''
                     );
                 }

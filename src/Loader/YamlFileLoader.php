@@ -16,7 +16,7 @@ class YamlFileLoader extends AbstractFileLoader
      */
     public function supports($resource, $type = null)
     {
-        return (is_string($resource)
+        return (\is_string($resource)
             && ('yml' === strtolower(pathinfo($resource, PATHINFO_EXTENSION))))
             && ((null === $type) || ('yaml' === $type));
     }

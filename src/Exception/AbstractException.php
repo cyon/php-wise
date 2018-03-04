@@ -21,8 +21,8 @@ abstract class AbstractException extends Exception implements ExceptionInterface
      */
     public static function format($format, $value = null)
     {
-        if (1 < func_num_args()) {
-            $format = vsprintf($format, array_slice(func_get_args(), 1));
+        if (1 < \func_num_args()) {
+            $format = vsprintf($format, \array_slice(\func_get_args(), 1));
         }
 
         return new static($format);

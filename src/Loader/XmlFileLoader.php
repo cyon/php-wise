@@ -17,7 +17,7 @@ class XmlFileLoader extends AbstractFileLoader
      */
     public function supports($resource, $type = null)
     {
-        return (is_string($resource)
+        return (\is_string($resource)
             && ('xml' === strtolower(pathinfo($resource, PATHINFO_EXTENSION))))
             && ((null === $type) || ('xml' === $type));
     }

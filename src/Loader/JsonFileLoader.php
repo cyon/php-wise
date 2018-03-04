@@ -16,7 +16,7 @@ class JsonFileLoader extends AbstractFileLoader
      */
     public function supports($resource, $type = null)
     {
-        return (is_string($resource)
+        return (\is_string($resource)
             && ('json' === strtolower(pathinfo($resource, PATHINFO_EXTENSION))))
             && ((null === $type) || ('json' === $type));
     }

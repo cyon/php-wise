@@ -25,7 +25,7 @@ class ArrayUtil
         foreach ($array as $key => $value) {
             $key = $prefix ? $prefix . $join . $key : $key;
 
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $flat = array_merge(
                     $flat,
                     self::flatten($value, $key, $join)
@@ -48,7 +48,7 @@ class ArrayUtil
     public static function walkRecursive(&$array, $callback, $data = null)
     {
         foreach ($array as $key => &$value) {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 self::walkRecursive($value, $callback, $data);
             } else {
                 $callback($value, $key, $array, $data);

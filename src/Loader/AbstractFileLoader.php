@@ -65,7 +65,7 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
                     $ref = $this->resolveReference($reference, $global);
                 }
 
-                if ((false === is_null($ref))
+                if ((false === \is_null($ref))
                     && (false === is_scalar($ref))
                     && (1 !== preg_match('/^%(?:[^%]+)%$/', $input))) {
                     throw InvalidReferenceException::format(
@@ -135,17 +135,17 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
         }
 
         if (isset($data['imports'])) {
-            if (false === is_array($data['imports'])) {
+            if (false === \is_array($data['imports'])) {
                 throw ImportException::format(
                     'The "imports" value is not valid in "%s".',
                     $file
                 );
             }
 
-            $dir = dirname($file);
+            $dir = \dirname($file);
 
             foreach ($data['imports'] as $i => $import) {
-                if (false === is_array($import)) {
+                if (false === \is_array($import)) {
                     throw ImportException::format(
                         'One of the "imports" values (#%d) is not valid in "%s".',
                         $i,
@@ -207,8 +207,8 @@ abstract class AbstractFileLoader extends FileLoader implements ResourceAwareInt
     public function resolveReference($reference, $values)
     {
         foreach (explode('.', $reference) as $leaf) {
-            if ((!is_array($values) && !($values instanceof ArrayAccess))
-                || (is_array($values) && !array_key_exists($leaf, $values))
+            if ((!\is_array($values) && !($values instanceof ArrayAccess))
+                || (\is_array($values) && !array_key_exists($leaf, $values))
                 || (($values instanceof ArrayAccess) && !$values->offsetExists($leaf))) {
                 throw InvalidReferenceException::format(
                     'The reference "%s" could not be resolved (failed at "%s").',

@@ -14,6 +14,6 @@ class ExampleFileLoader extends AbstractFileLoader
 
     public function supports($resource, $type = null)
     {
-        return is_string($resource);
+        return \is_string($resource);
     }
 }

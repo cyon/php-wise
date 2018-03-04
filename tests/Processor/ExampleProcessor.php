@@ -23,7 +23,7 @@ class ExampleProcessor extends AbstractProcessor
 
     public function supports($resource, $type = null)
     {
-        return is_array($resource)
+        return \is_array($resource)
             && ('example' === $type);
     }
 }
