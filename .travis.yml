@@ -65,7 +65,7 @@ before_install:
       fi
 
 install:
-    - travis_wait composer install $DEFAULT_COMPOSER_FLAGS
+    - travis_wait 30 composer install $DEFAULT_COMPOSER_FLAGS
 
 script:
     - |
