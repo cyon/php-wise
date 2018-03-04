@@ -51,6 +51,18 @@ before_install:
     - travis_retry composer selfupdate
     - if [ "${SYMFONY_CONFIG_VERSION}" != "" ]; then composer require "symfony/config:${SYMFONY_CONFIG_VERSION}" --no-update; fi;
     - travis_retry wget http://cs.sensiolabs.org/download/php-cs-fixer-v2.phar
+    - |
+      if [ -z ${PHP_CS_FIXER+x} ]; then
+        travis_wait composer \
+          --dev \
+          --no-update \
+          --no-scripts \
+          --no-interaction \
+          --no-ansi \
+          --no-progress \
+          --ignore-platform-reqs \
+          remove 'leofeyer/optimize-native-functions-fixer'
+      fi
 
 install:
     - travis_wait composer install $DEFAULT_COMPOSER_FLAGS
@@ -58,7 +70,7 @@ install:
 script:
     - |
       if ! [ -z ${PHP_CS_FIXER+x} ]; then
-          php php-cs-fixer-v2.phar fix \
+        php php-cs-fixer-v2.phar fix \
           --config=.php_cs.dist \
           --dry-run \
           --path-mode=intersection \

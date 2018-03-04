@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
 $finder = PhpCsFixer\Finder::create()->in([
     'src',
     'tests',
@@ -50,6 +52,11 @@ return PhpCsFixer\Config::create()
         'strict_param' => true,
         'trailing_comma_in_multiline_array' => true,
         'yoda_style' => true,
+        'LeoFeyer/optimize_native_functions' => true,
     ])
+    ->registerCustomFixers([
+        new LeoFeyer\PhpCsFixer\OptimizeNativeFunctionsFixer()
+    ])
+    ->setRiskyAllowed(true)
     ->setFinder($finder)
 ;
