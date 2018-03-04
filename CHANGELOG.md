@@ -8,6 +8,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
 
+## [2.0.1] - 2018-03-05
+
+### Added
+- Added optimize-native-functions-fixer for php-cs-fixer to optimize code for OpCache lookups
+
+### Changed
+- Prefixes native PHP functions
+- Increases travis 'composer install' timeout
+
 ## [2.0.0] - 2018-02-18
 
 ### Added
@@ -37,6 +46,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## [1.4.0] - 2013-08-15
 Last release of https://github.com/kherge-abandoned/php-wise. Project was forked of this repository.
 
-[Unreleased]: https://github.com/cyon/php-wise/compare/2.0.0...HEAD
+[Unreleased]: https://github.com/cyon/php-wise/compare/2.0.1...HEAD
+[2.0.1]: https://github.com/cyon/php-wise/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/cyon/php-wise/compare/1.4.0...2.0.0
 [1.4.0]: https://github.com/cyon/php-wise/compare/1.3.6...1.4.0
