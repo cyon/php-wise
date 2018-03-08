@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## [Unreleased]
 
+### Changed
+- Fixed wrong PHP `use` in docs about usage
+
 ## [2.0.1] - 2018-03-05
 
 ### Added

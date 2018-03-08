@@ -130,7 +130,7 @@ must create the delegating loader using your resolver, and then registering
 the loader with Wise:
 
 ```php
-use Herrera\Wise\Loader\DelegatingLoader;
+use Symfony\Component\Config\Loader\DelegatingLoader;
 
 $delegator = new DelegatingLoader($resolver);
 
